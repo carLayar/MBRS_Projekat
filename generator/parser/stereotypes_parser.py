@@ -8,6 +8,7 @@ from stereotypes.backend.stereotype_many_to_one import StereotypeManyToOne
 from stereotypes.backend.stereotype_one_to_many import StereotypeOneToMany
 from stereotypes.backend.stereotype_one_to_one import StereotypeOneToOne
 from stereotypes.backend.stereotype_persistant_property import StereotypePersistantProperty
+from stereotypes.frontend.stereotype_page import StereotypePage
 
 
 class StereotypesParser:
@@ -191,8 +192,35 @@ class StereotypesParser:
         for elem in frontend_stereotypes:
             tag_namespace = elem.tag.split('}')[0]  # Extract tag namespace
             tag_name = elem.tag.split('}')[1]  # Extract tag name without namespace
+            self.parse_frontend_stereotype(elem)
             # self.print_element(elem)
             # print("---")
+
+    def parse_frontend_stereotype(self, elem):
+        tag_name = elem.tag.split('}')[1]  # Extract tag name without namespace
+        match tag_name:
+            case 'Page':
+                self.parse_page(elem)
+            case 'Field':
+                self.parse_filed(elem)
+
+    def parse_page(self, elem):
+        class_id = elem.attrib['base_Class']
+        create = True if elem.attrib['create'] == 'true' else False
+        update = True if elem.attrib['update'] == 'true' else False
+        get_all = True if elem.attrib['getAll'] == 'true' else False
+        get_by_id = True if elem.attrib['getById'] == 'true' else False
+        singular_label = elem.attrib['singularLabel']
+        plural_label = elem.attrib['pluralLabel']
+        accusative_label = elem.attrib['accusativeLabel']
+
+        stereotype_page = StereotypePage(create, update, get_all, get_by_id, singular_label, plural_label, accusative_label)
+
+        fmclass = self.find_class_by_id(class_id)
+        fmclass.stereotypes.append(stereotype_page)
+
+    def parse_filed(self, elem):
+        pass
 
     def print_element(self, element):
         print(f"Tag: {element.tag}")
