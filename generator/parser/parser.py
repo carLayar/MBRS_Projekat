@@ -1,12 +1,14 @@
 import xml.etree.ElementTree as ET
 
 from parser.class_parser import ClassParser
+from parser.stereotypes_parser import StereotypesParser
 
 
 class Parser:
     def __init__(self, file_path):
         self.file_path = file_path
         self.root = None
+        self.parsed_classes = []
 
         self.namespaces = {
             'uml': 'http://www.omg.org/spec/UML/20110701',
@@ -21,10 +23,10 @@ class Parser:
 
     def parse(self):
         self._open_file()
-        # self.parsing_examplpes()
         self.parse_classes()
-        # self.parse_associations()
-        # self.parse_tags()
+        self.parse_stereotypes()
+        for c in self.parsed_classes:
+            print(c)
 
     def _open_file(self):
         try:
@@ -36,36 +38,17 @@ class Parser:
 
     def parse_classes(self):
         class_parser = ClassParser(self.root)
-        class_parser.parse_classes()
+        parsed = class_parser.parse_classes()
+        self.parsed_classes.extend(parsed)
 
     def parse_associations(self):
         print("Associations------------------")
         associations = self.root.findall(".//packagedElement[@xmi:type='uml:Association']", self.namespaces)
         print(len(associations))
 
-    def parse_tags(self):
-        print("Tags--------------------------")
-        backend_elements = []
-        ui_elements = []
-        for elem in self.root:
-            tag_namespace = elem.tag.split('}')[0]  # Extract tag namespace
-            tag_name = elem.tag.split('}')[1]  # Extract tag name without namespace
-            if 'BackEndProfile' in tag_namespace:
-                backend_elements.append(elem)
-            elif 'UIProfile' in tag_namespace:
-                ui_elements.append(elem)
-        print(len(backend_elements))
-        print(len(ui_elements))
-        # Print BackEndProfile elements
-        # print("BackEndProfile Elements:")
-        # for elem in backend_elements:
-        #     self.print_element(elem)
-        #     print("---")
-        # Print UIProfile elements
-        # print("UIProfile Elements:")
-        # for elem in ui_elements:
-        #     self.print_element(elem)
-        #     print("---")
+    def parse_stereotypes(self):
+        stereotypes_parser = StereotypesParser(self.root, self.parsed_classes)
+        stereotypes_parser.parse()
 
     def parsing_examplpes(self):
         # Find and print the value of the <xmi:exporter> element

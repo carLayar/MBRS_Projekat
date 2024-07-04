@@ -24,6 +24,7 @@ class ClassParser:
         for fmclass in classes:
             parsed_class = self.parse_class(fmclass)
             parsed_classes.append(parsed_class)
+        return parsed_classes
 
     def parse_class(self, fmclass):
         # self.print_element(fmclass)
@@ -32,7 +33,7 @@ class ClassParser:
         attributes_parser = AttributeParser(self.root, fmclass)
         attributes = attributes_parser.parse()
         fmclass = FMClass(class_id, class_name, attributes)
-        print(fmclass)
+        # print(fmclass)
         return fmclass
 
     def print_element(self, element):
