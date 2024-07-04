@@ -1,5 +1,7 @@
 import xml.etree.ElementTree as ET
 
+from parser.class_parser import ClassParser
+
 
 class Parser:
     def __init__(self, file_path):
@@ -33,11 +35,8 @@ class Parser:
             exit(-1)
 
     def parse_classes(self):
-        print("Classes-----------------------")
-        classes = self.root.findall(".//packagedElement[@xmi:type='uml:Class']", self.namespaces)
-        print(len(classes))
-        for fmclass in classes:
-            self.print_element(fmclass)
+        class_parser = ClassParser(self.root)
+        class_parser.parse_classes()
 
     def parse_associations(self):
         print("Associations------------------")
