@@ -8,6 +8,8 @@ from stereotypes.backend.stereotype_many_to_one import StereotypeManyToOne
 from stereotypes.backend.stereotype_one_to_many import StereotypeOneToMany
 from stereotypes.backend.stereotype_one_to_one import StereotypeOneToOne
 from stereotypes.backend.stereotype_persistant_property import StereotypePersistantProperty
+from stereotypes.frontend.component_type import ComponentType
+from stereotypes.frontend.stereotype_field import StereotypeField
 from stereotypes.frontend.stereotype_page import StereotypePage
 
 
@@ -220,7 +222,19 @@ class StereotypesParser:
         fmclass.stereotypes.append(stereotype_page)
 
     def parse_filed(self, elem):
-        pass
+        property_id = elem.attrib['base_Property']
+        label = elem.attrib['label']
+        read_only = True if elem.attrib['readOnly'] == 'true' else False
+
+        component = ComponentType.TEXT_FIELD
+        if 'component' in elem.attrib:
+            component_str = elem.attrib['component']
+            component = ComponentType[component_str]
+
+        stereotype_field = StereotypeField(label, component, read_only)
+
+        fm_property = self.find_property_by_id(property_id)
+        fm_property.stereotypes.append(stereotype_field)
 
     def print_element(self, element):
         print(f"Tag: {element.tag}")

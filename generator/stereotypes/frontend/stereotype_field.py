@@ -9,5 +9,5 @@ class StereotypeField:
         self.read_only = read_only
 
     def __str__(self):
-        return '[StereotypeField] Label = {}; Component = {}; ReadOnly = {};'\
-            .format(self.label, self.component, self.read_only)
+        return '\t[StereotypeField] Label = {}; Component = {}; ReadOnly = {};'\
+            .format(self.label, self.component.name, self.read_only)
