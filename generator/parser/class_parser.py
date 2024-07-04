@@ -1,4 +1,5 @@
 from fmmodel.fm_class import FMClass
+from parser.attribute_parser import AttributeParser
 
 
 class ClassParser:
@@ -28,7 +29,8 @@ class ClassParser:
         # self.print_element(fmclass)
         class_id = fmclass.attrib['{' + self.namespaces['xmi'] + '}id']
         class_name = fmclass.attrib['name']
-        attributes = []
+        attributes_parser = AttributeParser(self.root, fmclass)
+        attributes = attributes_parser.parse()
         fmclass = FMClass(class_id, class_name, attributes)
         print(fmclass)
         return fmclass
