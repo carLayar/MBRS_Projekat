@@ -1,0 +1,36 @@
+version: '3.8'
+
+services:
+  postgres-db:
+    image: postgres:latest
+    ports:
+      - "5433:5432"
+    networks:
+      - docker_network
+    environment:
+      POSTGRES_DB: mbrs_db
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: mbrs123
+
+  backend-service:
+    build: .
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres-db:5432/mbrs_db
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: mbrs123
+      SPRING_JPA_HIBERNATE_DDL_AUTO: update
+    ports:
+      - "8080:8080"
+    networks:
+      - docker_network
+    depends_on:
+      - postgres-db
+    restart: on-failure
+
+networks:
+  docker_network:
+    external: true
+
+volumes:
+  postgres-db:
+
