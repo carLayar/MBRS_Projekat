@@ -1,4 +1,5 @@
-import './assets/main.css'
+// Uncomment if you wish to use vite's pre-generated css
+// import './assets/main.css'
 
 import { createApp } from 'vue'
 import App from './App.vue'

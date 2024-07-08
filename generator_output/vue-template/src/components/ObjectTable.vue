@@ -1,7 +1,7 @@
 <template>
-  <div>
+  <!-- <div> -->
     <h1>Object List</h1>
-    <button @click="showAddModal">Add New</button>
+    <button class="btn add" @click="showAddModal">Add New</button>
     <table>
       <thead>
         <tr>
@@ -15,8 +15,8 @@
           <td>{{ object.id }}</td>
           <td>{{ object.name }}</td>
           <td>
-            <button @click="viewDetails(object.id)">Details</button>
-            <button @click="showUpdateModal(object)">Update</button>
+            <button class="btn details mr-5" @click="viewDetails(object.id)">Details</button>
+            <button class="btn update" @click="showUpdateModal(object)">Update</button>
           </td>
         </tr>
       </tbody>
@@ -45,11 +45,11 @@
             <label for="updateName">Name:</label>
             <input type="text" id="updateName" v-model="updateForm.name" required>
           </div>
-          <button type="submit">Update</button>
+          <button class="btn update mt-5" type="submit">Update</button>
         </form>
       </div>
     </div>
-  </div>
+  <!-- </div> -->
 </template>
 
 <script>
@@ -110,7 +110,55 @@ export default {
 };
 </script>
 
-<style>
+<style scoped>
+table {
+  width: 100%;
+  border-width: 1px;
+  border-color: #888;
+  border-style: solid;
+  margin-top: 5px;
+}
+tr, td, th {
+  border-width: 1px;
+  border-color: #888;
+  border-style: solid;
+}
+.mr-5 {
+  margin-right: 15px;
+}
+.mt-5 {
+  margin-top: 15px;
+}
+.btn {
+  font-size:large;
+  color: white;
+}
+
+.details {
+  background-color: blueviolet;
+  border-color: blueviolet;
+}
+.details:hover {
+  background-color: blue;
+  border-color: blue;
+}
+.add {
+  background-color: green;
+  border-color: green;
+}
+.add:hover {
+  background-color: limegreen;
+  border-color: limegreen;
+}
+.update {
+  background-color: chocolate;
+  border-color: chocolate;
+}
+.update:hover {
+  background-color: orange;
+  border-color: orange;
+}
+
 .modal {
   display: flex;
   position: fixed;
