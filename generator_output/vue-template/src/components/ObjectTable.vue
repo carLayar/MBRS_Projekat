@@ -1,55 +1,65 @@
 <template>
-  <!-- <div> -->
-    <h1>Object List</h1>
-    <button class="btn add" @click="showAddModal">Add New</button>
-    <table>
-      <thead>
-        <tr>
-          <th>ID</th>
-          <th>Name</th>
-          <th>Actions</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr v-for="object in objects" :key="object.id">
-          <td>{{ object.id }}</td>
-          <td>{{ object.name }}</td>
-          <td>
-            <button class="btn details mr-5" @click="viewDetails(object.id)">Details</button>
-            <button class="btn update" @click="showUpdateModal(object)">Update</button>
-          </td>
-        </tr>
-      </tbody>
-    </table>
+  <h1>Object List</h1>
+  <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#modalAdd"
+    @click="showAddModal">Add New</button>
+  <table class="table">
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Name</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr v-for="object in objects" :key="object.id">
+        <td>{{ object.id }}</td>
+        <td>{{ object.name }}</td>
+        <td>
+          <button class="btn btn-primary mr-2" @click="viewDetails(object.id)">Details</button>
+          <button class="btn btn-secondary" @click="showUpdateModal(object)"
+          data-bs-toggle="modal" data-bs-target="#modalUpdate">Update</button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
 
-    <div v-if="isAddModalVisible" class="modal">
+  <div class="modal fade" id="modalAdd" tabindex="-1" aria-labelledby="modalAddLabel" aria-hidden="true">
+    <div class="modal-dialog">
       <div class="modal-content">
-        <span class="close" @click="closeAddModal">&times;</span>
-        <h2>Add New Object</h2>
-        <form @submit.prevent="addObject">
+        <div class="modal-header">
+          <h5 class="modal-title" id="modalAdd">Add New Object</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
           <div>
-            <label for="newName">Name:</label>
-            <input type="text" id="newName" v-model="addForm.name" required>
+            <input type="text" class="form-control" placeholder="Name" id="newName" v-model="addForm.name" required>
           </div>
-          <button type="submit">Add</button>
-        </form>
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-success" type="submit">Add</button>
+        </div>
       </div>
     </div>
+  </div>
 
-    <div v-if="isUpdateModalVisible" class="modal">
+  <div class="modal fade" id="modalUpdate" tabindex="-1" aria-labelledby="modalUpdateLabel" aria-hidden="true">
+    <div class="modal-dialog">
       <div class="modal-content">
-        <span class="close" @click="closeUpdateModal">&times;</span>
-        <h2>Update Object</h2>
-        <form @submit.prevent="updateObject">
+        <div class="modal-header">
+          <h5 class="modal-title" id="modalAdd">Update Object</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
           <div>
-            <label for="updateName">Name:</label>
-            <input type="text" id="updateName" v-model="updateForm.name" required>
+            <input type="text" class="form-control" placeholder="Name" id="newName" v-model="updateForm.name" required>
           </div>
-          <button class="btn update mt-5" type="submit">Update</button>
-        </form>
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-secondary" type="submit">Update</button>
+        </div>
       </div>
     </div>
-  <!-- </div> -->
+  </div>
 </template>
 
 <script>
@@ -60,8 +70,6 @@ export default {
         { id: 1, name: 'Object 1' },
         { id: 2, name: 'Object 2' },
       ],
-      isAddModalVisible: false,
-      isUpdateModalVisible: false,
       addForm: {
         name: '',
       },
@@ -94,7 +102,6 @@ export default {
     showUpdateModal(object) {
       this.updateForm.id = object.id;
       this.updateForm.name = object.name;
-      this.isUpdateModalVisible = true;
     },
     closeUpdateModal() {
       this.isUpdateModalVisible = false;
@@ -111,89 +118,5 @@ export default {
 </script>
 
 <style scoped>
-table {
-  width: 100%;
-  border-width: 1px;
-  border-color: #888;
-  border-style: solid;
-  margin-top: 5px;
-}
-tr, td, th {
-  border-width: 1px;
-  border-color: #888;
-  border-style: solid;
-}
-.mr-5 {
-  margin-right: 15px;
-}
-.mt-5 {
-  margin-top: 15px;
-}
-.btn {
-  font-size:large;
-  color: white;
-}
 
-.details {
-  background-color: blueviolet;
-  border-color: blueviolet;
-}
-.details:hover {
-  background-color: blue;
-  border-color: blue;
-}
-.add {
-  background-color: green;
-  border-color: green;
-}
-.add:hover {
-  background-color: limegreen;
-  border-color: limegreen;
-}
-.update {
-  background-color: chocolate;
-  border-color: chocolate;
-}
-.update:hover {
-  background-color: orange;
-  border-color: orange;
-}
-
-.modal {
-  display: flex;
-  position: fixed;
-  z-index: 1;
-  left: 0;
-  top: 0;
-  width: 100%;
-  height: 100%;
-  overflow: auto;
-  background-color: rgba(0, 0, 0, 0.4);
-  justify-content: center;
-  align-items: center;
-}
-
-.modal-content {
-  background-color: gray;
-  color: white;
-  margin: auto;
-  padding: 20px;
-  border: 1px solid #888;
-  width: 80%;
-  max-width: 500px;
-}
-
-.close {
-  color: white;
-  float: right;
-  font-size: 28px;
-  font-weight: bold;
-}
-
-.close:hover,
-.close:focus {
-  color: black;
-  text-decoration: none;
-  cursor: pointer;
-}
 </style>
