@@ -38,5 +38,13 @@ class ClassGenerationModel:
         return self.clas.name[0].lower() + self.clas.name[1:] + "Repository"
 
     @property
+    def service_class_name(self):
+        return self.clas.name + "Service"
+
+    @property
+    def service_name(self):
+        return self.clas.name[0].lower() + self.clas.name[1:] + "Service"
+
+    @property
     def clas_properies(self):
         return self.clas.attributes
