@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="mt-5 w-75 ms-auto me-auto">
     <h1>Object Details</h1>
     <div v-if="object">
       <p>ID: {{ object.id }}</p>

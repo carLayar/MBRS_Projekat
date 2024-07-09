@@ -1,27 +1,30 @@
 <template>
-  <h1>Object List</h1>
-  <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#modalAdd"
-    @click="showAddModal">Add New</button>
-  <table class="table">
-    <thead>
-      <tr>
-        <th>ID</th>
-        <th>Name</th>
-        <th>Actions</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr v-for="object in objects" :key="object.id">
-        <td>{{ object.id }}</td>
-        <td>{{ object.name }}</td>
-        <td>
-          <button class="btn btn-primary mr-2" @click="viewDetails(object.id)">Details</button>
-          <button class="btn btn-secondary" @click="showUpdateModal(object)"
-          data-bs-toggle="modal" data-bs-target="#modalUpdate">Update</button>
-        </td>
-      </tr>
-    </tbody>
-  </table>
+  <div class="mt-5 w-75 ms-auto me-auto">
+    <h1>Object List</h1>
+    <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#modalAdd"
+      @click="showAddModal">Add New</button>
+    <table class="table">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Name</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr v-for="object in objects" :key="object.id">
+          <td>{{ object.id }}</td>
+          <td>{{ object.name }}</td>
+          <td>
+            <button class="btn btn-primary me-2" @click="viewDetails(object.id)">Details</button>
+            <button class="btn btn-secondary" @click="showUpdateModal(object)"
+            data-bs-toggle="modal" data-bs-target="#modalUpdate">Update</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
 
   <div class="modal fade" id="modalAdd" tabindex="-1" aria-labelledby="modalAddLabel" aria-hidden="true">
     <div class="modal-dialog">
