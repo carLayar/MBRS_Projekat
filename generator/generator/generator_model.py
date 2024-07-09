@@ -24,3 +24,19 @@ class ClassGenerationModel:
     @property
     def class_name(self):
         return self.clas.name
+
+    @property
+    def class_variable(self):
+        return self.clas.name[0].lower() + self.clas.name[1:]
+
+    @property
+    def repository_class_name(self):
+        return self.clas.name + "Repository"
+
+    @property
+    def repository_name(self):
+        return self.clas.name[0].lower() + self.clas.name[1:] + "Repository"
+
+    @property
+    def clas_properies(self):
+        return self.clas.attributes
