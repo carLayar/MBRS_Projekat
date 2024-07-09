@@ -25,8 +25,7 @@ class Parser:
         self._open_file()
         self.parse_classes()
         self.parse_stereotypes()
-        for c in self.parsed_classes:
-            print(c)
+        return self.parsed_classes
 
     def _open_file(self):
         try:
