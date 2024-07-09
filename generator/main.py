@@ -1,4 +1,5 @@
 # This is a sample Python script.
+from generator.generator import Generator
 from parser.parser import Parser
 
 
@@ -15,4 +16,9 @@ def print_hi(name):
 if __name__ == '__main__':
     path = '../dijagrami/MBRS.xml'
     parser = Parser(path)
-    parser.parse()
+    parsed_classes = parser.parse()
+    for c in parsed_classes:
+        print(c)
+    generator = Generator(parsed_classes)
+    generator.generate()
+
