@@ -19,7 +19,9 @@ class Generator:
         self.generate_controller_layer()
 
     def generate_model(self):
-        generator_options = GeneratorOptions("generator_output\\backend-service\\src\\main\\java".replace("\\", os.sep), "jpatemplate.jinja", "./templates", "{0}.java", "ftn.backendservice.domain.entities")
+        generator_options = GeneratorOptions("generator_output\\backend-service\\src\\main\\java".replace("\\", os.sep),
+                                             "jpatemplate.jinja", "./templates", "{0}.java",
+                                             "ftn.backendservice.domain.entities")
         model_generator = ModelGenerator(generator_options, self.classes)
         model_generator.generate()
 

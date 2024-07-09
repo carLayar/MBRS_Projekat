@@ -57,8 +57,13 @@ class ModelGenerator:
         current_directory = os.getcwd()
         parent_directory = os.path.dirname(current_directory)
         relative_output_path = self.generator_options.package_name.replace('.', os.sep)
+        output_directory = os.path.join(parent_directory, self.generator_options.output_path, relative_output_path)
+
+        # Ensure the directory exists
+        os.makedirs(output_directory, exist_ok=True)
+
         output_file_name = self.generator_options.output_file_name.format(model.file_name)
-        path = os.path.join(parent_directory, self.generator_options.output_path, relative_output_path, output_file_name)
+        path = os.path.join(output_directory, output_file_name)
 
         with open(path, 'w', encoding='utf-8') as f:
             f.write(output)
