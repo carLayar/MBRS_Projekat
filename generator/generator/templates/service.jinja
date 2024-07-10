@@ -15,6 +15,8 @@ import ftn.backendservice.exception.exceptions.BadRequestException;
 import java.util.Optional;
 
 import ftn.backendservice.domain.entities.{{ model.class_name }};
+import ftn.backendservice.domain.mappers.{{ model.mapper_class_name }};
+import ftn.backendservice.domain.dtos.{{ model.dto_class_name }};
 import ftn.backendservice.repositories.{{ model.repository_class_name }};
 
 
@@ -24,13 +26,14 @@ public class {{ model.class_name }}Service {
 
     private final {{ model.repository_class_name }} {{ model.repository_name }};
 
-    public List<{{ model.class_name }}> getAll() {
-        return {{ model.repository_name }}.findAll();
+    public List<{{ model.dto_class_name }}> getAll() {
+        List<{{ model.class_name }}> list = {{ model.repository_name }}.findAll();
+        return {{ model.mapper_class_name }}.INSTANCE.toDTO(list);
     }
 
-    public {{ model.class_name }} getById(Long id) {
-        Optional<{{ model.class_name }}> optional = {{ model.repository_name }}.findById(id);
-        return optional.orElseThrow(() -> new NotFoundException("{{ model.class_name }} not found with id: " + id));
+    public {{ model.dto_class_name }} getById(Long id) {
+        {{ model.class_name }} {{ model.class_variable }} = {{ model.repository_name }}.findById(id).orElseThrow(() -> new NotFoundException("{{ model.class_name }} not found with id: " + id));
+        return {{ model.mapper_class_name }}.INSTANCE.toDTO({{ model.class_variable }});
     }
 
     public {{ model.class_name }} save({{ model.class_name }} {{ model.class_variable }}) {

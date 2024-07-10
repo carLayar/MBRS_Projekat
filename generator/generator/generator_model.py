@@ -89,3 +89,7 @@ class ClassGenerationModel:
                 connected_attribs.append(attribute)
         return connected_attribs
 
+
+    @property
+    def mapper_class_name(self):
+        return self.clas.name + "Mapper"
