@@ -136,9 +136,11 @@ export default {
     showAddModal() {
       this.isAddModalVisible = true;
     },
+
     closeAddModal() {
       this.isAddModalVisible = false;
     },
+
     addObject() {
       AccountService.create(this.addForm).then(res => {
         this.accounts.push(res.data);
@@ -148,18 +150,22 @@ export default {
         console.log(err);
       });
     },
+
     viewDetails(id) {
-      this.$router.push({ name: 'Details', params: { id } });
+      this.$router.push({ name: 'AccountDetails', params: { id } });
     },
+
     showUpdateModal(object) {
       this.selectedCustomer = null;
       this.updateForm = {...object};
       this.setSelectedCustomer(object.id);
       this.setCurrentTransactions(object.id);
     },
+
     closeUpdateModal() {
       this.isUpdateModalVisible = false;
     },
+
     updateObject() {
       let payload = {...this.updateForm};
       payload.customer = this.selectedCustomer;

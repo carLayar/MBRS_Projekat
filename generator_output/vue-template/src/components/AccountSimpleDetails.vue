@@ -1,16 +1,9 @@
 <template>
     <div class="mt-5 w-75 ms-auto me-auto">
-      <h1>Account Details</h1>
       <div v-if="account">
         <p>id: {{ account.id }}</p>
         <p>accountNumber: {{ account.accountNumber }}</p>
         <p>balance: {{ account.balance }}</p>
-        <p>customer</p>
-        <CustomerSimpleDetails :id="account.customerId" />
-        <p>transactions</p>
-        <div v-for="item in account.transactionIds" :key="item">
-          <TransactionSimpleDetails :id="item"/>
-        </div>
       </div>
       <div v-else>
         <p>Loading...</p>
@@ -20,26 +13,23 @@
   
   <script>
   import AccountService from '@/service/AccountService';
-  import CustomerSimpleDetails from '@/components/CustomerSimpleDetails.vue';
-  import TransactionSimpleDetails from '@/components/TransactionSimpleDetails.vue'
 
   export default {
-    components: {
-      CustomerSimpleDetails,
-      TransactionSimpleDetails
-    },
+    props: ['id'],
     data() {
       return {
         account: null,
       };
     },
     created() {
-      AccountService.getById(this.$route.params.id).then(res => {
+      AccountService.getById(this.id).then(res => {
         this.account = res.data;
       }).catch(err => {
         console.log(err);
       })
-    }
+    },
+    methods: {
+    },
   };
   </script>
   
