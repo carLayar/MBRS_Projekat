@@ -2,6 +2,7 @@ import os
 
 from generator.config.generator_options import GeneratorOptions
 from generator.controller_generator import ControllerGenerator
+from generator.dto_generator import DtoGenerator
 from generator.model_generator import ModelGenerator
 from generator.repository_generator import RepositoryGenerator
 from generator.service_generator import ServiceGenerator
@@ -14,6 +15,7 @@ class Generator:
 
     def generate(self):
         self.generate_model()
+        self.generate_dtos()
         self.generate_repository_layer()
         self.generate_service_layer()
         self.generate_controller_layer()
@@ -24,6 +26,13 @@ class Generator:
                                              "ftn.backendservice.domain.entities")
         model_generator = ModelGenerator(generator_options, self.classes)
         model_generator.generate()
+
+    def generate_dtos(self):
+        generator_options = GeneratorOptions("generator_output\\backend-service\\src\\main\\java".replace("\\", os.sep),
+                                             "dtotemplate.jinja", "./templates", "{0}Dto.java",
+                                             "ftn.backendservice.domain.dtos")
+        dto_generator = DtoGenerator(generator_options, self.classes)
+        dto_generator.generate()
 
     def generate_repository_layer(self):
         generator_options = GeneratorOptions("generator_output\\backend-service\\src\\main\\java".replace("\\", os.sep),

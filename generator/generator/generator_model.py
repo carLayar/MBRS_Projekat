@@ -1,4 +1,8 @@
 from stereotypes.backend.stereotype_entity import StereotypeEntity
+from stereotypes.backend.stereotype_many_to_many import StereotypeManyToMany
+from stereotypes.backend.stereotype_many_to_one import StereotypeManyToOne
+from stereotypes.backend.stereotype_one_to_many import StereotypeOneToMany
+from stereotypes.backend.stereotype_one_to_one import StereotypeOneToOne
 
 
 class ClassGenerationModel:
@@ -48,3 +52,40 @@ class ClassGenerationModel:
     @property
     def clas_properies(self):
         return self.clas.attributes
+
+    @property
+    def dto_class_name(self):
+        return self.clas.name + "Dto"
+
+    @property
+    def non_connected_attributes(self):
+        non_connected_attribs = []
+        for attribute in self.clas.attributes:
+            is_connected = False
+            for stereotype in attribute.stereotypes:
+                if isinstance(stereotype, StereotypeManyToOne) \
+                        or isinstance(stereotype, StereotypeManyToMany)\
+                        or isinstance(stereotype, StereotypeOneToMany)\
+                        or isinstance(stereotype, StereotypeOneToOne):
+                    is_connected = True
+                    break
+            if not is_connected:
+                non_connected_attribs.append(attribute)
+        return non_connected_attribs
+
+    @property
+    def connected_attributes(self):
+        connected_attribs = []
+        for attribute in self.clas.attributes:
+            is_connected = False
+            for stereotype in attribute.stereotypes:
+                if isinstance(stereotype, StereotypeManyToOne) \
+                        or isinstance(stereotype, StereotypeManyToMany) \
+                        or isinstance(stereotype, StereotypeOneToMany) \
+                        or isinstance(stereotype, StereotypeOneToOne):
+                    is_connected = True
+                    break
+            if is_connected:
+                connected_attribs.append(attribute)
+        return connected_attribs
+
