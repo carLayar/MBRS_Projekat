@@ -26,8 +26,9 @@ public class {{ model.class_name }}Service {
 
     private final {{ model.repository_class_name }} {{ model.repository_name }};
 
-    public List<{{ model.class_name }}> getAll() {
-        return {{ model.repository_name }}.findAll();
+    public List<{{ model.dto_class_name }}> getAll() {
+        List<{{ model.class_name }}> list = {{ model.repository_name }}.findAll();
+        return {{ model.mapper_class_name }}.INSTANCE.toDTO(list);
     }
 
     public {{ model.dto_class_name }} getById(Long id) {

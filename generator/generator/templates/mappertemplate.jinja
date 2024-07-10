@@ -23,5 +23,7 @@ public interface {{ model.mapper_class_name }} {
     {% endfor -%}
     {{ model.dto_class_name }} toDTO({{ model.class_name }} {{ model.class_variable }});
 
+    List<{{ model.dto_class_name }}> toDTO(List<{{ model.class_name }}> {{ model.class_variable }});
+
 }
 
