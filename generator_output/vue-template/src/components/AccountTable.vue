@@ -39,7 +39,9 @@
         </div>
         <div class="modal-body">
           <div>
+            <label>accountNumber</label>
             <input type="text" class="form-control" placeholder="accountNumber" id="newAccountNumber" v-model="addForm.accountNumber" required>
+            <label>balance</label>
             <input type="number" class="form-control" placeholder="balance" id="newBalance" v-model="addForm.balance" required>
           </div>
         </div>
@@ -71,14 +73,14 @@
             </select>
 
             <label>transactions</label>
-            <div v-for="item in currentTransactions" :key="item.id" class="d-flex justify-content-between">
+            <div v-for="item in currentTransactions" :key="item.id" class="d-flex justify-content-between list-item">
               <p>
                 {{ item.id }}
               </p>
               <button type="button" @click="removeTransaction(item.id)">Delete</button>
             </div>
             <select class="form-select" v-model="newSelectedTransaction" @change="addTransaction">
-              <option v-for="item in transactions" :key="item.id" :value="item">{{item.id}}</option>
+              <option v-for="item in transactions" :key="item.id" :value="item">{{item.id}} - Mika </option>
             </select>            
 
           </div>
@@ -138,13 +140,13 @@ export default {
     },
 
     closeAddModal() {
-      this.isAddModalVisible = false;
+      document.getElementById('modalAdd').click();
     },
 
     addObject() {
       AccountService.create(this.addForm).then(res => {
         this.accounts.push(res.data);
-        this.addForm = {};
+        this.resetForm();
         this.closeAddModal();
       }).catch(err => {
         console.log(err);
@@ -163,7 +165,7 @@ export default {
     },
 
     closeUpdateModal() {
-      this.isUpdateModalVisible = false;
+      document.getElementById('modalUpdate').click();
     },
 
     updateObject() {
@@ -171,11 +173,17 @@ export default {
       payload.customer = this.selectedCustomer;
       payload.transactions = this.currentTransactions;
       AccountService.update(payload.id, payload).then(_res => {
+        this.resetForm();
         window.location.reload();
       }).catch(err => {
         console.log(err);
       });
       this.closeUpdateModal();
+    },
+
+    resetForm() {
+      this.addForm = {};
+      this.updateForm = {};
     },
 
     setSelectedCustomer(accountId) {
