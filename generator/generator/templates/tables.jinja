@@ -54,6 +54,11 @@ export default {
         console.log(err);
       });
     },
+
+    viewDetails(id) {
+      this.$router.push({ name: '{{ model.class_name }}Details', params: { id } });
+    },
+
   },
 };
 </script>

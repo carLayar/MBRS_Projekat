@@ -77,10 +77,21 @@ class DetailsGenerator:
         </div>
                 '''.format(model.class_variable, attribute_variable_name_converter(value), attribute_class_name_converter(value))
 
+        def singular_label_converter(value):
+            page_stereotype = None
+            for stereotype in value.clas.stereotypes:
+                if isinstance(stereotype, StereotypePage):
+                    page_stereotype = stereotype
+                    break
+            if page_stereotype is not None:
+                return page_stereotype.singular_label
+            return ""
+
         self.env.filters['label_converter'] = label_converter
         self.env.filters['attribute_class_name_converter'] = attribute_class_name_converter
         self.env.filters['connected_attribute_label_converter'] = connected_attribute_label_converter
         self.env.filters['simple_details_component_converter'] = simple_details_component_converter
+        self.env.filters['singular_label_converter'] = singular_label_converter
 
     def generate(self):
         for clas in self.classes:
