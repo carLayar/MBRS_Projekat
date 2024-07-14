@@ -2,6 +2,7 @@ import os
 
 from generator.config.generator_options import GeneratorOptions
 from generator.controller_generator import ControllerGenerator
+from generator.details_generator import DetailsGenerator
 from generator.dto_generator import DtoGenerator
 from generator.front_service_generator import FrontServiceGenerator
 from generator.mapper_generator import MapperGenerator
@@ -31,6 +32,7 @@ class Generator:
     def generate_frontend_code(self):
         self.generate_frontend_service()
         self.generate_simple_details_components()
+        self.generate_details_components()
 
     def generate_model(self):
         generator_options = GeneratorOptions("generator_output\\backend-service\\src\\main\\java".replace("\\", os.sep),
@@ -87,3 +89,10 @@ class Generator:
                                              "components")
         simple_details_generator = SimpleDetailsGenerator(generator_options, self.classes)
         simple_details_generator.generate()
+
+    def generate_details_components(self):
+        generator_options = GeneratorOptions("generator_output\\vue-template\\src".replace("\\", os.sep),
+                                             "details.jinja", "./templates", "{0}Details.vue",
+                                             "components")
+        details_generator = DetailsGenerator(generator_options, self.classes)
+        details_generator.generate()

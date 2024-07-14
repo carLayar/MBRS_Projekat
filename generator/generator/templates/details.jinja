@@ -1,0 +1,57 @@
+<template>
+  <div class="py-5 min-vh-100 is-fullheight">
+    <div class="w-50 ms-auto me-auto">
+      <h1>{{ model.class_name }} Details</h1>
+      <div v-if="{{ model.class_variable }}" class="d-flex flex-column card bg-light shadow p-4 contain">
+        {% for attribute in model.non_connected_attributes -%}
+        <p class="my-1">{{ attribute | label_converter }}: {% raw %}{{{% endraw %}{{ model.class_variable }}.{{ attribute.name }}{% raw %}}}{% endraw %}</p>
+        {% endfor %}
+        {% for attribute in model.connected_attributes -%}
+        <label class="my-1">{{ attribute | connected_attribute_label_converter }}</label>
+        {{ attribute | simple_details_component_converter(model) }}
+        {% endfor %}
+      </div>
+      <div v-else>
+        <p>Loading...</p>
+      </div>
+    </div>
+  </div>
+</template>
+
+<script>
+import {{ model.class_name }}Service from '@/service/{{ model.class_name }}Service';
+{% for attribute in model.connected_attributes -%}
+import {{ attribute | attribute_class_name_converter }}SimpleDetails from '@/components/{{ attribute | attribute_class_name_converter }}SimpleDetails.vue';
+{% endfor %}
+
+export default {
+  components: {
+    {% for attribute in model.connected_attributes -%}
+    {{ attribute | attribute_class_name_converter }}SimpleDetails,
+    {% endfor %}
+  },
+  data() {
+    return {
+      {{ model.class_variable }}: null,
+    };
+  },
+  created() {
+    {{ model.class_name }}Service.getById(this.$route.params.id).then(res => {
+      this.{{ model.class_variable }} = res.data;
+    }).catch(err => {
+      console.log(err);
+    });
+  }
+};
+</script>
+
+<style scoped>
+  /* input {
+    width: fit-content;
+    padding: 4px 7px;
+  }
+  label {
+    font-weight: 600;
+    font-size: 18px;
+  } */
+</style>
