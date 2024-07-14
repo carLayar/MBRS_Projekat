@@ -2,7 +2,11 @@
 <div class="mt-1 ms-5 p-3 card shadow-sm w-75">
   <div v-if="{{ model.class_variable }}" class="d-flex flex-column">
     {% for attribute in model.non_connected_attributes -%}
-    <p class="my-1">{{ attribute | label_converter }}: {% raw %}{{{% endraw %}{{ model.class_variable }}.{{ attribute.name }}{% raw %}}}{% endraw %}</p>
+    {% if attribute.data_type == "LocalDateTime" -%}
+      <p class="my-1">{{ attribute | label_converter }}: {% raw %}{{{% endraw %}formatDate({{ model.class_variable }}.{{ attribute.name }}){% raw %}}}{% endraw %}</p>
+    {% else -%}
+      <p class="my-1">{{ attribute | label_converter }}: {% raw %}{{{% endraw %}{{ model.class_variable }}.{{ attribute.name }}{% raw %}}}{% endraw %}</p>
+    {% endif -%}
     {% endfor -%}
   </div>
   <div v-else>
@@ -27,6 +31,18 @@ export default {
     }).catch(err => {
       console.log(err);
     })
+  },
+  methods: {
+    formatDate(date) {
+      const year = date[0];
+      const month = String(date[1]).padStart(2, '0');
+      const day = String(date[2]).padStart(2, '0');
+      const hour = String(date[3]).padStart(2, '0');
+      const minute = String(date[4]).padStart(2, '0');
+
+      const formattedDate = `${day}.${month}.${year}. ${hour}:${minute}`;
+      return formattedDate
+    },
   }
 };
 </script>
