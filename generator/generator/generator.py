@@ -10,6 +10,7 @@ from generator.model_generator import ModelGenerator
 from generator.repository_generator import RepositoryGenerator
 from generator.service_generator import ServiceGenerator
 from generator.simple_details_generator import SimpleDetailsGenerator
+from generator.tables_generator import TablesGenerator
 
 
 class Generator:
@@ -33,6 +34,7 @@ class Generator:
         self.generate_frontend_service()
         self.generate_simple_details_components()
         self.generate_details_components()
+        self.generate_table_components()
 
     def generate_model(self):
         generator_options = GeneratorOptions("generator_output\\backend-service\\src\\main\\java".replace("\\", os.sep),
@@ -96,3 +98,10 @@ class Generator:
                                              "components")
         details_generator = DetailsGenerator(generator_options, self.classes)
         details_generator.generate()
+
+    def generate_table_components(self):
+        generator_options = GeneratorOptions("generator_output\\vue-template\\src".replace("\\", os.sep),
+                                             "tables.jinja", "./templates", "{0}Table.vue",
+                                             "components")
+        tables_generator = TablesGenerator(generator_options, self.classes)
+        tables_generator.generate()

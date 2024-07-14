@@ -1,0 +1,77 @@
+<template>
+  <div class="mt-5 w-75 ms-auto me-auto">
+    <h1>{{ model | plural_label_converter }}</h1>
+    <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#modalAdd" @click="showAddModal">Dodaj</button>
+    <table class="table">
+      <thead>
+        <tr>
+          {% for attribute in model.non_connected_attributes -%}
+          <th>{{ attribute | label_converter }}</th>
+          {% endfor -%}
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr v-for="object in {{ model.list_variable }}" :key="object.id">
+          {% for attribute in model.non_connected_attributes -%}
+          <td>{% raw %}{{{% endraw %} object.{{ attribute.name }} {% raw %}}}{% endraw %}</td>
+          {% endfor -%}
+          <td>
+            <button class="btn btn-primary me-2" @click="viewDetails(object.id)">Details</button>
+            <button class="btn btn-secondary" @click="showUpdateModal(object)"
+            data-bs-toggle="modal" data-bs-target="#modalUpdate">Update</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</template>
+<script>
+import {{ model.class_name }}Service from '@/service/{{ model.class_name }}Service';
+{% for attribute in model.connected_attributes -%}
+import {{ attribute | attribute_class_name_converter }}Service from '@/service/{{ attribute | attribute_class_name_converter }}Service';
+{% endfor %}
+
+export default {
+  data() {
+    return {
+      {{ model.list_variable }}: [],   // list of entities for display
+      addForm: {},
+      updateForm: {},
+
+    };
+  },
+
+  mounted() {
+    this.load{{ model.list_class}}();
+  },
+
+  methods: {
+    load{{ model.list_class}}() {
+      {{ model.class_name }}Service.getAll().then(res => {
+        this.{{ model.list_variable }} = res.data;
+      }).catch(err => {
+        console.log(err);
+      });
+    },
+  },
+};
+</script>
+<style scoped>
+.list-item {
+  border: 1px solid #bdc5ca;
+  margin-bottom: 2px;
+  border-radius: 4px;
+  padding: 3px 5px 3px 10px;
+  display: flex;
+  align-items: center;
+}
+
+.btn-delete-item {
+  background-color: #d53243;
+  border: none;
+  border-radius: 3px;
+  padding: 3px 7px;
+}
+</style>
+

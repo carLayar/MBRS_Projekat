@@ -93,3 +93,11 @@ class ClassGenerationModel:
     @property
     def mapper_class_name(self):
         return self.clas.name + "Mapper"
+
+    @property
+    def list_variable(self):
+        return self.clas.name[0].lower() + self.clas.name[1:] + "s"
+
+    @property
+    def list_class(self):
+        return self.clas.name + "s"
