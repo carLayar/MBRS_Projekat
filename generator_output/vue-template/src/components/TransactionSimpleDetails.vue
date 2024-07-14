@@ -1,9 +1,14 @@
 <template>
-    <div class="mt-1 w-75 ms-auto me-auto">
-      <div v-if="transaction">
-        <p>id: {{ transaction.id }}</p>
-        <p>amount: {{ transaction.amount }}</p>
-        <p>transactionDate: {{ formatDate(transaction.transactionDate) }}</p>
+    <div class="mt-1 ms-5 p-3 card shadow-sm w-75">
+      <div v-if="transaction" class="d-flex flex-column">
+        <label class="my-1">id</label>
+        <input class="p-1" :value="transaction.id" disabled />
+
+        <label class="my-1">amount</label>
+        <input class="p-1" :value="transaction.amount" disabled />
+
+        <label class="my-1">transactionDate</label>
+        <input class="p-1" :value="formatDate(transaction.transactionDate)" disabled />
       </div>
       <div v-else>
         <p>Loading...</p>
@@ -42,4 +47,4 @@
     }
   };
   </script>
-  
+

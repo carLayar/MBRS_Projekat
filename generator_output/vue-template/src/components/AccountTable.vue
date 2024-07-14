@@ -39,10 +39,10 @@
         </div>
         <div class="modal-body">
           <div>
-            <label>accountNumber</label>
-            <input type="text" class="form-control" placeholder="accountNumber" id="newAccountNumber" v-model="addForm.accountNumber" required>
-            <label>balance</label>
-            <input type="number" class="form-control" placeholder="balance" id="newBalance" v-model="addForm.balance" required>
+            <label class="my-1">accountNumber</label>
+            <input type="text" class="form-control" id="newAccountNumber" v-model="addForm.accountNumber" required>
+            <label class="my-1">balance</label>
+            <input type="number" class="form-control" id="newBalance" v-model="addForm.balance" required>
           </div>
         </div>
         <div class="modal-footer">
@@ -61,23 +61,27 @@
         </div>
         <div class="modal-body">
           <div>
-            <label>accountNumber</label>
-            <input type="text" class="form-control" placeholder="accountNumber" id="newAccountNumber" v-model="updateForm.accountNumber" required>
-            <label>balance</label>
-            <input type="number" class="form-control" placeholder="balance" id="newBalance" v-model="updateForm.balance" required>
+            <label class="my-1">accountNumber</label>
+            <input type="text" class="form-control" id="newAccountNumber" v-model="updateForm.accountNumber" required>
+            <label class="my-1">balance</label>
+            <input type="number" class="form-control" id="newBalance" v-model="updateForm.balance" required>
             
-            <label>customer</label>
+            <label class="my-1">customer</label>
             <select class="form-select" v-model="selectedCustomer">
               <option :value="null">None</option>
               <option v-for="item in customers" :key="item.id" :value="item">{{item.id}}</option>
             </select>
 
-            <label>transactions</label>
+            <label class="my-1">transactions</label>
             <div v-for="item in currentTransactions" :key="item.id" class="d-flex justify-content-between list-item">
-              <p>
+              <div>
                 {{ item.id }}
-              </p>
-              <button type="button" @click="removeTransaction(item.id)">Delete</button>
+              </div>
+              <button type="button" @click="removeTransaction(item.id)" class="btn-delete-item">
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="28" viewBox="0 0 24 24">
+                  <path fill="#ffffff" d="M3 6v18h18v-18h-18zm5 14c0 .552-.448 1-1 1s-1-.448-1-1v-10c0-.552.448-1 1-1s1 .448 1 1v10zm5 0c0 .552-.448 1-1 1s-1-.448-1-1v-10c0-.552.448-1 1-1s1 .448 1 1v10zm5 0c0 .552-.448 1-1 1s-1-.448-1-1v-10c0-.552.448-1 1-1s1 .448 1 1v10zm4-18v2h-20v-2h5.711c.9 0 1.631-1.099 1.631-2h5.315c0 .901.73 2 1.631 2h5.712z"/>
+                </svg>
+              </button>
             </div>
             <select class="form-select" v-model="newSelectedTransaction" @change="addTransaction">
               <option v-for="item in transactions" :key="item.id" :value="item">{{item.id}} - Mika </option>
@@ -226,6 +230,20 @@ export default {
 </script>
 
 <style scoped>
+  .list-item {
+    border: 1px solid #697279;
+    margin-bottom: 2px;
+    border-radius: 3px;
+    padding: 5px 7px;
+    display: flex;
+    align-items: center;
+  }
 
+  .btn-delete-item {
+    background-color: #d53243;
+    border: none;
+    border-radius: 3px;
+    padding: 3px 7px;
+  }
 </style>
   

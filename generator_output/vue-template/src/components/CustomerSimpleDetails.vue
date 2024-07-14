@@ -1,10 +1,17 @@
 <template>
-    <div class="mt-1 w-75 ms-auto me-auto">
-      <div v-if="customer">
-        <p>id: {{ customer.id }}</p>
-        <p>name: {{ customer.name }}</p>
-        <p>surname: {{ customer.surname }}</p>
-        <p>email: {{ customer.email }}</p>
+    <div class="mt-1 ms-5 p-3 card shadow-sm w-75">
+      <div v-if="customer" class="d-flex flex-column">
+        <label class="my-1">id</label>
+        <input class="p-1" :value="customer.id" disabled />
+        
+        <label class="my-1">name</label>
+        <input class="p-1":value="customer.name" disabled />
+        
+        <label class="my-1">surname</label>
+        <input class="p-1" :value="customer.surname" disabled />
+        
+        <label class="my-1">email</label>
+        <input class="p-1" :value="customer.email" disabled />
       </div>
       <div v-else>
         <p>Loading...</p>

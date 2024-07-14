@@ -1,13 +1,20 @@
 <template>
-    <div class="mt-5 w-75 ms-auto me-auto">
+  <div class="py-5 min-vh-100 is-fullheight">
+    <div class="w-50 ms-auto me-auto">
       <h1>Account Details</h1>
-      <div v-if="account">
-        <p>id: {{ account.id }}</p>
-        <p>accountNumber: {{ account.accountNumber }}</p>
-        <p>balance: {{ account.balance }}</p>
-        <p>customer</p>
+      <div v-if="account" class="d-flex flex-column card bg-light shadow p-4 contain">
+        <label class="my-1">id</label>
+        <input :value="account.id" disabled />
+
+        <label class="my-1">accountNumber</label>
+        <input :value="account.accountNumber" disabled />
+
+        <label class="my-1">balance</label>
+        <input :value="account.balance" disabled />
+
+        <label class="my-1">customer</label>
         <CustomerSimpleDetails :id="account.customerId" />
-        <p>transactions</p>
+        <label class=my-1>transactions</label>
         <div v-for="item in account.transactionIds" :key="item">
           <TransactionSimpleDetails :id="item"/>
         </div>
@@ -16,6 +23,7 @@
         <p>Loading...</p>
       </div>
     </div>
+  </div>
   </template>
   
   <script>
@@ -43,3 +51,13 @@
   };
   </script>
   
+  <style scoped>
+    input {
+      width: fit-content;
+      padding: 4px 7px;
+    }
+    label {
+      font-weight: 600;
+      font-size: 18px;
+    }
+  </style>
