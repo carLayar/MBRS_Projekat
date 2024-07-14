@@ -231,10 +231,10 @@ export default {
 
 <style scoped>
   .list-item {
-    border: 1px solid #697279;
+    border: 1px solid #bdc5ca;
     margin-bottom: 2px;
-    border-radius: 3px;
-    padding: 5px 7px;
+    border-radius: 4px;
+    padding: 3px 5px 3px 10px;
     display: flex;
     align-items: center;
   }
