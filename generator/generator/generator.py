@@ -8,6 +8,7 @@ from generator.mapper_generator import MapperGenerator
 from generator.model_generator import ModelGenerator
 from generator.repository_generator import RepositoryGenerator
 from generator.service_generator import ServiceGenerator
+from generator.simple_details_generator import SimpleDetailsGenerator
 
 
 class Generator:
@@ -29,6 +30,7 @@ class Generator:
 
     def generate_frontend_code(self):
         self.generate_frontend_service()
+        self.generate_simple_details_components()
 
     def generate_model(self):
         generator_options = GeneratorOptions("generator_output\\backend-service\\src\\main\\java".replace("\\", os.sep),
@@ -78,3 +80,10 @@ class Generator:
                                              "service")
         service_generator = FrontServiceGenerator(generator_options, self.classes)
         service_generator.generate()
+
+    def generate_simple_details_components(self):
+        generator_options = GeneratorOptions("generator_output\\vue-template\\src".replace("\\", os.sep),
+                                             "simple_details.jinja", "./templates", "{0}SimpleDetails.vue",
+                                             "components")
+        simple_details_generator = SimpleDetailsGenerator(generator_options, self.classes)
+        simple_details_generator.generate()

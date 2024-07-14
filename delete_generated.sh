@@ -23,6 +23,7 @@ done
 # Define the directories and the files to keep
 folders2=(
     "generator_output/vue-template/src/service/"
+	"generator_output/vue-template/src/components/"
 )
 files_to_keep=(
 	"api.js"
