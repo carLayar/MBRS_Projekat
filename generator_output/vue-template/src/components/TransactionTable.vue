@@ -34,7 +34,7 @@
             <div>
               <input type="number" class="form-control" placeholder="amount" v-model="addForm.amount" required>
               <input type="date" class="form-control" placeholder="date" v-model="addForm.date" required>
-              <input type="time" class="form-control" placeholder="time" v-model="addForm.time" required>
+              <!-- <input type="time" class="form-control" placeholder="time" v-model="addForm.time" required> -->
             </div>
           </div>
           <div class="modal-footer">
@@ -127,7 +127,7 @@ export default {
     addObject() {
       const payload = {
         ...this.addForm,
-        transactionDate: `${this.addForm.date}T${this.addForm.time}`,
+        transactionDate: `${this.addForm.date}T00:00`,
       };
       TransactionService.create(payload).then(res => {
         this.transactions.push(res.data);

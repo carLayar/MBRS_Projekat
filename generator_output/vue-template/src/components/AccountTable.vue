@@ -8,8 +8,7 @@
           <th>id</th>
           <th>accountNumber</th>
           <th>balance</th>
-          <th>customerId</th>
-          <th>transactionIds</th>
+          <th></th>
         </tr>
       </thead>
       <tbody>
@@ -17,8 +16,6 @@
           <td>{{ object.id }}</td>
           <td>{{ object.accountNumber }}</td>
           <td>{{ object.balance }}</td>
-          <td>{{ object.customerId }}</td>
-          <td>{{ parseListProperty(object.transactionIds) }}</td>
           <td>
             <button class="btn btn-primary me-2" @click="viewDetails(object.id)">Details</button>
             <button class="btn btn-secondary" @click="showUpdateModal(object)"
@@ -41,8 +38,10 @@
           <div>
             <label class="my-1">accountNumber</label>
             <input type="text" class="form-control" id="newAccountNumber" v-model="addForm.accountNumber" required>
+
             <label class="my-1">balance</label>
             <input type="number" class="form-control" id="newBalance" v-model="addForm.balance" required>
+            
           </div>
         </div>
         <div class="modal-footer">
@@ -67,12 +66,15 @@
             <input type="number" class="form-control" id="newBalance" v-model="updateForm.balance" required>
             
             <label class="my-1">customer</label>
+            <!-- dropbox -->
             <select class="form-select" v-model="selectedCustomer">
               <option :value="null">None</option>
               <option v-for="item in customers" :key="item.id" :value="item">{{item.id}}</option>
             </select>
 
             <label class="my-1">transactions</label>
+
+            <!-- display selected transactions -->
             <div v-for="item in currentTransactions" :key="item.id" class="d-flex justify-content-between list-item">
               <div>
                 {{ item.id }}
@@ -83,7 +85,10 @@
                 </svg>
               </button>
             </div>
-            <select class="form-select" v-model="newSelectedTransaction" @change="addTransaction">
+            
+            <!-- dropbox -->
+            <select class="form-select mt-3" v-model="newSelectedTransaction" @change="addTransaction">
+              <option :value="null">None</option>
               <option v-for="item in transactions" :key="item.id" :value="item">{{item.id}} - Mika </option>
             </select>            
 
@@ -98,39 +103,49 @@
 </template>
 
 <script>
+// import service of generated type
 import AccountService from '@/service/AccountService';
+
+// import services for all linked types
 import CustomerService from '@/service/CustomerService';
 import TransactionService from '@/service/TransactionService';
 
 export default {
   data() {
     return {
-      accounts: [],
+      accounts: [],   // list of entities for dispplay
       addForm: {},
       updateForm: {},
-      customers: [],
-      transactions: [],
 
-      selectedCustomer: null,
+      customers: [],        // linked entity list used for update
+      transactions: [],     // linked entity list used for update
 
-      currentTransactions: [],
-      newSelectedTransaction: null
+      // [for single linked entity add selected{{model.class_name}} property]
+      selectedCustomer: null,   // used for update
+
+      // [for multiple linked entity add current{{model.class_name}}s property]
+      currentTransactions: [],    // used for update
+      // [for multiple linked entity add newSelected{{model.class_name}}]
+      newSelectedTransaction: null, // used for update
     };
   },
 
   mounted() {
+    // get all entities of generated type
     AccountService.getAll().then(res => {
       this.accounts = res.data;
     }).catch(err => {
       console.log(err);
     });
 
+    // get all entities of linked type
     CustomerService.getAll().then(res => {
       this.customers = res.data;
     }).catch(err => {
       console.log(err);
     });
 
+    // get all entities of linked type
     TransactionService.getAll().then(res => {
       this.transactions = res.data;
     }).catch(err => {
@@ -139,6 +154,8 @@ export default {
   },
 
   methods: {
+
+    // BEGIN Add related methods 
     showAddModal() {
       this.isAddModalVisible = true;
     },
@@ -157,14 +174,17 @@ export default {
       });
     },
 
-    viewDetails(id) {
-      this.$router.push({ name: 'AccountDetails', params: { id } });
-    },
+    // END Add related methods
 
+    
+    // BEGIN Update related methods
     showUpdateModal(object) {
-      this.selectedCustomer = null;
       this.updateForm = {...object};
+
+      // for single linked entity
       this.setSelectedCustomer(object.id);
+
+      // for multiple linked entity
       this.setCurrentTransactions(object.id);
     },
 
@@ -174,34 +194,40 @@ export default {
 
     updateObject() {
       let payload = {...this.updateForm};
-      payload.customer = this.selectedCustomer;
-      payload.transactions = this.currentTransactions;
-      AccountService.update(payload.id, payload).then(_res => {
+
+      payload.customer = this.selectedCustomer;           // this is dynamic
+      payload.transactions = this.currentTransactions;    // this is dynamic
+
+      AccountService.update(payload.id, payload)
+      .then(_res => {
         this.resetForm();
         window.location.reload();
-      }).catch(err => {
+      })
+      .catch(err => {
         console.log(err);
       });
+
       this.closeUpdateModal();
     },
 
-    resetForm() {
-      this.addForm = {};
-      this.updateForm = {};
-    },
-
+    // update util
     setSelectedCustomer(accountId) {
+      this.selectedCustomer = null;
+
       const obj = this.accounts.find(x => x.id === accountId);
       if (obj === undefined) {
         return;
       }
+
       const customerObj = this.customers.find(x => x.id === obj.customerId);
       if (customerObj === undefined) {
         return;
       }
+
       this.selectedCustomer = customerObj;
     },
 
+    // update util
     setCurrentTransactions(accountId) {
       const obj = this.accounts.find(x => x.id === accountId);
       if (obj === undefined) {
@@ -210,40 +236,49 @@ export default {
       this.currentTransactions = this.transactions.filter(x => obj.transactionIds.includes(x.id));
     },
 
+    // update util, [for multiple linked entity]
     addTransaction() {
       this.currentTransactions.push(this.newSelectedTransaction);
       this.newSelectedTransaction = null;
     },
-
+    // update util
     removeTransaction(transactionId) {
       this.currentTransactions = this.currentTransactions.filter(x => x.id !== transactionId);
     },
 
-    parseListProperty(list) {
-      if (!list) {
-        return "";
-      }
-      return list.map(x => x.toString()).join(", ");
-    }
+    // END Update related methods
+
+    // BEGIN Details related methods 
+    viewDetails(id) {
+      this.$router.push({ name: 'AccountDetails', params: { id } });
+    },
+    // END Details related methods
+
+    // util methods
+    resetForm() {
+      this.addForm = {};
+      this.updateForm = {};
+    },
+
   },
 };
 </script>
 
 <style scoped>
-  .list-item {
-    border: 1px solid #bdc5ca;
-    margin-bottom: 2px;
-    border-radius: 4px;
-    padding: 3px 5px 3px 10px;
-    display: flex;
-    align-items: center;
-  }
+.list-item {
+  border: 1px solid #bdc5ca;
+  margin-bottom: 2px;
+  border-radius: 4px;
+  padding: 3px 5px 3px 10px;
+  display: flex;
+  align-items: center;
+}
 
-  .btn-delete-item {
-    background-color: #d53243;
-    border: none;
-    border-radius: 3px;
-    padding: 3px 7px;
-  }
+.btn-delete-item {
+  background-color: #d53243;
+  border: none;
+  border-radius: 3px;
+  padding: 3px 7px;
+}
 </style>
   
