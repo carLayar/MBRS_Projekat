@@ -5,7 +5,7 @@
     <div class="d-flex justify-content-center">
         <div>
             <h3>Congratulations on successfully generating your app</h3>
-            <div class="contain card shadow">
+            <div class="contain card shadow bg-light">
                 <div class="card-body">
                     <div class="link">To take a peek at your <b>&nbsp;customer&nbsp;</b> table, go to <a href="/customer/table">/customer/table</a></div>
                     <div class="link">To take a peek at your <b>&nbsp;account&nbsp;</b> table, go to <a href="/account/table">/account/table</a></div>
