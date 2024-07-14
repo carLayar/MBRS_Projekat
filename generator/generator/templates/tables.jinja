@@ -29,6 +29,44 @@
       </tbody>
     </table>
   </div>
+
+  <div class="modal fade" id="modalAdd" tabindex="-1" aria-labelledby="modalAddLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Dodaj nov Account</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <div>
+            {% for attribute in model.non_connected_attributes -%}
+            {% if generate_label_add_modal(attribute) %}
+            <label class="my-1">{{ attribute | label_converter }}</label>
+
+            {% if attribute.data_type == "LocalDateTime" -%}
+            <input type="date" class="form-control" placeholder="date" v-model="addForm.{{ attribute.name }}" required>
+
+            {% elif attribute.data_type == "String" -%}
+            <input type="text" class="form-control" v-model="addForm.{{ attribute.name }}" required>
+
+            {% elif attribute.data_type == "Long" -%}
+            <input type="number" class="form-control" v-model="addForm.{{ attribute.name }}" required>
+
+            {% elif attribute.data_type == "Double" -%}
+            <input type="number" class="form-control" v-model="addForm.{{ attribute.name }}" required>
+
+            {% endif -%}
+            {% endif -%}
+            {% endfor %}
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-success" type="submit" @click="addObject">Add</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
 </template>
 <script>
 import {{ model.class_name }}Service from '@/service/{{ model.class_name }}Service';
@@ -61,6 +99,37 @@ export default {
 
     viewDetails(id) {
       this.$router.push({ name: '{{ model.class_name }}Details', params: { id } });
+    },
+
+    // Add section begin
+    showAddModal() {
+      this.isAddModalVisible = true;
+    },
+
+    closeAddModal() {
+      document.getElementById('modalAdd').click();
+    },
+
+    addObject() {
+      {%- for attribute in model.non_connected_attributes -%}
+      {% if attribute.data_type == "LocalDateTime" -%}
+      this.addForm.{{ attribute.name }} = new Date(this.addForm.{{ attribute.name }}).toISOString();
+      {% endif %}
+      {% endfor -%}
+
+      {{ model.class_name }}Service.create(this.addForm).then(res => {
+        this.{{ model.list_variable }}.push(res.data);
+        this.resetForm();
+        this.closeAddModal();
+      }).catch(err => {
+        console.log(err);
+      });
+    },
+    // Add section end
+
+    resetForm() {
+      this.addForm = {};
+      this.updateForm = {};
     },
 
     formatDate(date) {

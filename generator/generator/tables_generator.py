@@ -87,11 +87,24 @@ class TablesGenerator:
                 return page_stereotype.plural_label
             return ""
 
+        def generate_label_add_modal(attribute):
+            field_stereotype = None
+            for stereotype in attribute.stereotypes:
+                if isinstance(stereotype, StereotypeField):
+                    field_stereotype = stereotype
+                    break
+            if field_stereotype is not None:
+                if not field_stereotype.read_only:
+                    return True
+            return False
+
         self.env.filters['label_converter'] = label_converter
         self.env.filters['attribute_class_name_converter'] = attribute_class_name_converter
         self.env.filters['connected_attribute_label_converter'] = connected_attribute_label_converter
         self.env.filters['simple_details_component_converter'] = simple_details_component_converter
         self.env.filters['plural_label_converter'] = plural_label_converter
+
+        self.env.globals['generate_label_add_modal'] = generate_label_add_modal
 
     def generate(self):
         for clas in self.classes:
