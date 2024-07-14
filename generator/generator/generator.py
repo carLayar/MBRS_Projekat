@@ -19,7 +19,7 @@ class Generator:
         self.classes = classes
 
     def generate(self):
-        #self.generate_backend_code()
+        self.generate_backend_code()
         self.generate_frontend_code()
 
     def generate_backend_code(self):
