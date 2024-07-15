@@ -6,7 +6,7 @@ from stereotypes.frontend.stereotype_field import StereotypeField
 from stereotypes.frontend.stereotype_page import StereotypePage
 
 
-class DetailsGenerator:
+class TablesGenerator:
     def __init__(self, generator_options, classes):
         self.generator_options = generator_options
         self.classes = classes
@@ -21,6 +21,30 @@ class DetailsGenerator:
                 if isinstance(stereotype, StereotypeField):
                     return stereotype.label
             return ""
+
+        def label_converter_connected_type(value):
+            label = ''
+            data_type = value.data_type
+            if "List" in value.data_type:
+                splited_list = value.data_type.split("<")
+                data_type = splited_list[1].replace(">", "")
+            searched_class = None
+            for clas in self.classes:
+                if clas.name == data_type:
+                    searched_class = clas
+                    break
+            if searched_class is not None:
+                searched_stereotype = None
+                for stereotype in searched_class.stereotypes:
+                    if isinstance(stereotype, StereotypePage):
+                        searched_stereotype = stereotype
+                        break
+                if searched_stereotype is not None:
+                    if "List" in value.data_type:
+                        label = searched_stereotype.plural_label
+                    else:
+                        label = searched_stereotype.singular_label
+            return label
 
         def attribute_class_name_converter(value):
             if "List" in value.data_type:
@@ -77,21 +101,61 @@ class DetailsGenerator:
         </div>
                 '''.format(model.class_variable, attribute_variable_name_converter(value), attribute_class_name_converter(value))
 
-        def singular_label_converter(value):
+        def plural_label_converter(value):
             page_stereotype = None
             for stereotype in value.clas.stereotypes:
                 if isinstance(stereotype, StereotypePage):
                     page_stereotype = stereotype
                     break
             if page_stereotype is not None:
-                return page_stereotype.singular_label
+                return page_stereotype.plural_label
             return ""
+
+        def attribute_list_name_converter(value):
+            is_singular = True
+            searched_data_type = value.data_type
+            if "List" in value.data_type:
+                splited_list = value.data_type.split("<")
+                searched_data_type = splited_list[1].replace(">", "")
+                is_singular = False
+
+            if is_singular:
+                return value.name + "s"
+            else:
+                return value.name
+
+        def generate_label_add_modal(attribute):
+            field_stereotype = None
+            for stereotype in attribute.stereotypes:
+                if isinstance(stereotype, StereotypeField):
+                    field_stereotype = stereotype
+                    break
+            if field_stereotype is not None:
+                if not field_stereotype.read_only:
+                    return True
+            return False
+
+        def attribute_is_singular(value):
+            is_singular = True
+            searched_data_type = value.data_type
+            if "List" in value.data_type:
+                splited_list = value.data_type.split("<")
+                searched_data_type = splited_list[1].replace(">", "")
+                is_singular = False
+
+            return is_singular
 
         self.env.filters['label_converter'] = label_converter
         self.env.filters['attribute_class_name_converter'] = attribute_class_name_converter
         self.env.filters['connected_attribute_label_converter'] = connected_attribute_label_converter
         self.env.filters['simple_details_component_converter'] = simple_details_component_converter
-        self.env.filters['singular_label_converter'] = singular_label_converter
+        self.env.filters['plural_label_converter'] = plural_label_converter
+        self.env.filters['attribute_list_name_converter'] = attribute_list_name_converter
+        self.env.filters['attribute_variable_name_converter'] = attribute_variable_name_converter
+        self.env.filters['label_converter_connected_type'] = label_converter_connected_type
+
+        self.env.globals['generate_label_add_modal'] = generate_label_add_modal
+        self.env.globals['attribute_is_singular'] = attribute_is_singular
 
     def generate(self):
         for clas in self.classes:
@@ -118,3 +182,5 @@ class DetailsGenerator:
 
     def module_path(self, relative_path):
         return os.path.join(os.path.dirname(__file__), relative_path)
+
+

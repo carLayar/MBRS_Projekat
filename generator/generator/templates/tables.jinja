@@ -1,0 +1,340 @@
+<template>
+  <div class="mt-5 w-75 ms-auto me-auto">
+    <h1>{{ model | plural_label_converter }}</h1>
+    <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#modalAdd" @click="showAddModal">Dodaj</button>
+    <table class="table">
+      <thead>
+        <tr>
+          {% for attribute in model.non_connected_attributes -%}
+          <th>{{ attribute | label_converter }}</th>
+          {% endfor -%}
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr v-for="object in {{ model.list_variable }}" :key="object.id">
+          {% for attribute in model.non_connected_attributes -%}
+          {% if attribute.data_type == "LocalDateTime" -%}
+            <td>{% raw %}{{{% endraw %} formatDate(object.{{ attribute.name }}) {% raw %}}}{% endraw %}</td>
+          {% else -%}
+            <td>{% raw %}{{{% endraw %} object.{{ attribute.name }} {% raw %}}}{% endraw %}</td>
+          {% endif -%}
+          {% endfor -%}
+          <td>
+            <button class="btn btn-primary me-2" @click="viewDetails(object.id)">Details</button>
+            <button class="btn btn-secondary" @click="showUpdateModal(object)"
+            data-bs-toggle="modal" data-bs-target="#modalUpdate">Update</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="modal fade" id="modalAdd" tabindex="-1" aria-labelledby="modalAddLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Dodaj nov Account</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <div>
+            {% for attribute in model.non_connected_attributes -%}
+            {% if generate_label_add_modal(attribute) %}
+            <label class="my-1">{{ attribute | label_converter }}</label>
+
+            {% if attribute.data_type == "LocalDateTime" -%}
+            <input type="date" class="form-control" placeholder="date" v-model="addForm.{{ attribute.name }}" required>
+
+            {% elif attribute.data_type == "String" -%}
+            <input type="text" class="form-control" v-model="addForm.{{ attribute.name }}" required>
+
+            {% elif attribute.data_type == "Long" -%}
+            <input type="number" class="form-control" v-model="addForm.{{ attribute.name }}" required>
+
+            {% elif attribute.data_type == "Double" -%}
+            <input type="number" class="form-control" v-model="addForm.{{ attribute.name }}" required>
+
+            {% endif -%}
+            {% endif -%}
+            {% endfor %}
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-success" type="submit" @click="addObject">Add</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal fade" id="modalUpdate" tabindex="-1" aria-labelledby="modalUpdateLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="modalAdd">Izmeni Account</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <div>
+            {% for attribute in model.non_connected_attributes -%}
+            {% if generate_label_add_modal(attribute) %}
+            <label class="my-1">{{ attribute | label_converter }}</label>
+            {% if attribute.data_type == "LocalDateTime" -%}
+            <input type="date" class="form-control" placeholder="date" v-model="updateForm.{{ attribute.name }}" required>
+
+            {% elif attribute.data_type == "String" -%}
+            <input type="text" class="form-control" v-model="updateForm.{{ attribute.name }}" required>
+
+            {% elif attribute.data_type == "Long" -%}
+            <input type="number" class="form-control" v-model="updateForm.{{ attribute.name }}" required>
+
+            {% elif attribute.data_type == "Double" -%}
+            <input type="number" class="form-control" v-model="updateForm.{{ attribute.name }}" required>
+            {% endif -%}
+            {% endif -%}
+            {% endfor %}
+            <!-- Connected entities -->
+            {% for attribute in model.connected_attributes -%}
+            {% if attribute_is_singular(attribute) -%}
+            <label class="my-1">{{ attribute | label_converter_connected_type }}</label>
+            <!-- dropbox -->
+            <select class="form-select" v-model="selected{{ attribute | attribute_class_name_converter }}">
+              <option :value="null">None</option>
+              <option v-for="item in {{ attribute | attribute_list_name_converter }}" :key="item.id" :value="item">{% raw %}{{{% endraw %}item.id{% raw %}}}{% endraw %}</option>
+            </select>
+            {% else -%}
+            <label class="my-1">{{ attribute | label_converter_connected_type }}</label>
+            <!-- display selected {{attribute.name}} -->
+            <div v-for="item in current{{ attribute | attribute_class_name_converter }}" :key="item.id" class="d-flex justify-content-between list-item">
+              <div>
+                {% raw %}{{{% endraw %} item.id {% raw %}}}{% endraw %}
+              </div>
+              <button type="button" @click="remove{{ attribute | attribute_class_name_converter }}(item.id)" class="btn-delete-item">
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="28" viewBox="0 0 24 24">
+                  <path fill="#ffffff" d="M3 6v18h18v-18h-18zm5 14c0 .552-.448 1-1 1s-1-.448-1-1v-10c0-.552.448-1 1-1s1 .448 1 1v10zm5 0c0 .552-.448 1-1 1s-1-.448-1-1v-10c0-.552.448-1 1-1s1 .448 1 1v10zm5 0c0 .552-.448 1-1 1s-1-.448-1-1v-10c0-.552.448-1 1-1s1 .448 1 1v10zm4-18v2h-20v-2h5.711c.9 0 1.631-1.099 1.631-2h5.315c0 .901.73 2 1.631 2h5.712z"/>
+                </svg>
+              </button>
+            </div>
+            <!-- dropbox -->
+            <select class="form-select mt-3" v-model="newSelected{{ attribute | attribute_class_name_converter }}" @change="add{{ attribute | attribute_class_name_converter }}">
+              <option :value="null">None</option>
+              <option v-for="item in {{ attribute | attribute_list_name_converter }}" :key="item.id" :value="item">{% raw %}{{{% endraw %}item.id{% raw %}}}{% endraw %}</option>
+            </select>
+            {% endif %}
+            {% endfor %}
+
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-secondary" type="submit" @click="updateObject">Update</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</template>
+<script>
+import {{ model.class_name }}Service from '@/service/{{ model.class_name }}Service';
+{% for attribute in model.connected_attributes -%}
+import {{ attribute | attribute_class_name_converter }}Service from '@/service/{{ attribute | attribute_class_name_converter }}Service';
+{% endfor %}
+
+export default {
+  data() {
+    return {
+      {{ model.list_variable }}: [],   // list of entities for display
+      addForm: {},
+      updateForm: {},
+      {% for attribute in model.connected_attributes -%}
+      {{ attribute | attribute_list_name_converter }}: [],
+      {% if attribute_is_singular(attribute) -%}
+      selected{{ attribute | attribute_class_name_converter }}: null,
+      {% else -%}
+      current{{ attribute | attribute_class_name_converter }}: [],
+      newSelected{{ attribute | attribute_class_name_converter }}: null,
+      {% endif %}
+      {% endfor %}
+    };
+  },
+
+  mounted() {
+    this.load{{ model.list_class}}();
+    {% for attribute in model.connected_attributes -%}
+    this.load{{ attribute.name }}();
+    {% endfor %}
+  },
+
+  methods: {
+    load{{ model.list_class}}() {
+      {{ model.class_name }}Service.getAll().then(res => {
+        this.{{ model.list_variable }} = res.data;
+      }).catch(err => {
+        console.log(err);
+      });
+    },
+    {% for attribute in model.connected_attributes %}
+    load{{ attribute.name }}() {
+      {{ attribute | attribute_class_name_converter }}Service.getAll().then(res => {
+        this.{{ attribute | attribute_list_name_converter }} = res.data;
+      }).catch(err => {
+        console.log(err);
+      });
+    },
+    {% endfor %}
+    viewDetails(id) {
+      this.$router.push({ name: '{{ model.class_name }}Details', params: { id } });
+    },
+
+    // Add section begin
+    showAddModal() {
+      this.isAddModalVisible = true;
+    },
+
+    closeAddModal() {
+      document.getElementById('modalAdd').click();
+    },
+
+    addObject() {
+      {%- for attribute in model.non_connected_attributes -%}
+      {% if attribute.data_type == "LocalDateTime" -%}
+      this.addForm.{{ attribute.name }} = new Date(this.addForm.{{ attribute.name }}).toISOString();
+      {% endif %}
+      {% endfor -%}
+
+      {{ model.class_name }}Service.create(this.addForm).then(res => {
+        this.{{ model.list_variable }}.push(res.data);
+        this.resetForm();
+        this.closeAddModal();
+      }).catch(err => {
+        console.log(err);
+      });
+    },
+    // Add section end
+
+    // BEGIN Update related methods
+    {% for attribute in model.connected_attributes -%}
+    {% if attribute_is_singular(attribute) -%}
+    // update util
+    setSelected{{ attribute | attribute_class_name_converter }}({{ model.class_variable }}Id) {
+      this.selected{{ attribute | attribute_class_name_converter }} = null;
+
+      const obj = this.{{ model.list_variable }}.find(x => x.id === {{ model.class_variable }}Id);
+      if (obj === undefined) {
+        return;
+      }
+
+      const foundObj = this.{{ attribute | attribute_list_name_converter }}.find(x => x.id === obj.{{ attribute.name }}Id);
+      if (foundObj === undefined) {
+        return;
+      }
+
+      this.selected{{ attribute | attribute_class_name_converter }} = foundObj;
+    },
+    {% else -%}
+    // update util
+    setCurrent{{ attribute | attribute_class_name_converter }}({{ model.class_variable }}Id) {
+      const obj = this.{{ model.list_variable }}.find(x => x.id === {{ model.class_variable }}Id);
+      if (obj === undefined) {
+        return;
+      }
+      this.current{{ attribute | attribute_class_name_converter }} = this.{{ attribute | attribute_list_name_converter }}.filter(x => obj.{{ attribute | attribute_variable_name_converter }}Ids.includes(x.id));
+    },
+
+    // update util
+    add{{ attribute | attribute_class_name_converter }}() {
+      this.current{{ attribute | attribute_class_name_converter }}.push(this.newSelected{{ attribute | attribute_class_name_converter }});
+      this.newSelected{{ attribute | attribute_class_name_converter }} = null;
+    },
+
+    // update util
+    remove{{ attribute | attribute_class_name_converter }}({{ attribute | attribute_variable_name_converter }}Id) {
+      this.current{{ attribute | attribute_class_name_converter }} = this.current{{ attribute | attribute_class_name_converter }}.filter(x => x.id !== {{ attribute | attribute_variable_name_converter }}Id);
+    },
+    {% endif %}
+    {% endfor %}
+    showUpdateModal(object) {
+      this.updateForm = { ...object };
+      {%- for attribute in model.non_connected_attributes -%}
+      {% if attribute.data_type == "LocalDateTime" -%}
+      this.updateForm.{{ attribute.name }} = `${object.{{ attribute.name }}[0]}-${String(object.{{ attribute.name }}[1]).padStart(2, '0')}-${String(object.{{ attribute.name }}[2]).padStart(2, '0')}`;
+      {% endif %}
+      {% endfor -%}
+      {% for attribute in model.connected_attributes -%}
+      {% if attribute_is_singular(attribute) -%}
+      this.setSelected{{ attribute | attribute_class_name_converter }}(object.id);
+      {% else -%}
+      this.setCurrent{{ attribute | attribute_class_name_converter }}(object.id);
+      {% endif %}
+      {% endfor %}
+    },
+    updateObject() {
+      let payload = {...this.updateForm};
+      {%- for attribute in model.non_connected_attributes -%}
+      {% if attribute.data_type == "LocalDateTime" -%}
+      payload.{{ attribute.name }} = new Date(this.updateForm.{{ attribute.name }}).toISOString();
+      {% endif %}
+      {% endfor -%}
+
+      {% for attribute in model.connected_attributes -%}
+      {% if attribute_is_singular(attribute) -%}
+      payload.{{ attribute.name }} = this.selected{{ attribute | attribute_class_name_converter }};
+      {% else -%}
+      payload.{{ attribute.name }} = this.current{{ attribute | attribute_class_name_converter }};
+      {% endif %}
+      {% endfor %}
+      {{ model.class_name }}Service.update(payload.id, payload)
+      .then(_res => {
+        this.resetForm();
+        window.location.reload();
+      })
+      .catch(err => {
+        console.log(err);
+      });
+
+      this.closeUpdateModal();
+
+    },
+
+    closeUpdateModal() {
+      document.getElementById('modalUpdate').click();
+    },
+
+    // END Update related methods
+
+    resetForm() {
+      this.addForm = {};
+      this.updateForm = {};
+    },
+
+    formatDate(date) {
+      const year = date[0];
+      const month = String(date[1]).padStart(2, '0');
+      const day = String(date[2]).padStart(2, '0');
+      const hour = String(date[3]).padStart(2, '0');
+      const minute = String(date[4]).padStart(2, '0');
+
+      const formattedDate = `${day}.${month}.${year}. ${hour}:${minute}`;
+      return formattedDate
+    },
+
+  },
+};
+</script>
+<style scoped>
+.list-item {
+  border: 1px solid #bdc5ca;
+  margin-bottom: 2px;
+  border-radius: 4px;
+  padding: 3px 5px 3px 10px;
+  display: flex;
+  align-items: center;
+}
+
+.btn-delete-item {
+  background-color: #d53243;
+  border: none;
+  border-radius: 3px;
+  padding: 3px 7px;
+}
+</style>
+

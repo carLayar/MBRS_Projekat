@@ -1,17 +1,50 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import HomeView from '../views/HomeView.vue'
-import ObjectDetails from '../components/ObjectDetails.vue'
-import ObjectTable from '../components/ObjectTable.vue'
+import AccountTable from '../components/AccountTable.vue'
+import AccountDetails from '../components/AccountDetails.vue'
+import CustomerTable from '@/components/CustomerTable.vue';
+import CustomerDetails from '@/components/CustomerDetails.vue';
+import TransactionTable from '@/components/TransactionTable.vue';
+import TransactionDetails from '@/components/TransactionDetails.vue';
+import BankBranchTable from '@/components/BankBranchTable.vue';
+import BankBranchDetails from '@/components/BankBranchDetails.vue';
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
-    { path: '/table', name: 'Table', component: ObjectTable },
-    { path: '/details/:id', name: 'Details', component: ObjectDetails },
+    { path: '/account/table', name: 'AccountTable', component: AccountTable },
+    { path: '/account/details/:id', name: 'AccountDetails', component: AccountDetails },
     {
-      path: '/',
-      name: 'home',
-      component: HomeView
+      path: '/customer/table',
+      name: 'CustomerTable',
+      component: CustomerTable
+    },
+    {
+      path: '/customer/details/:id',
+      name: 'CustomerDetails',
+      component: CustomerDetails,
+      props: true
+    },
+    {
+      path: '/transaction/table',
+      name: 'TransactionTable',
+      component: TransactionTable
+    },
+    {
+      path: '/transaction/details/:id',
+      name: 'TransactionDetails',
+      component: TransactionDetails,
+      props: true
+    },
+    {
+      path: '/bankBranch/table',
+      name: 'BankBranchTable',
+      component: BankBranchTable
+    },
+    {
+      path: '/bankBranch/details/:id',
+      name: 'BankBranchDetails',
+      component: BankBranchDetails,
+      props: true
     }
   ]
 })
