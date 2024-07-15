@@ -9,6 +9,7 @@ from generator.home_page_generator import HomePageGenerator
 from generator.mapper_generator import MapperGenerator
 from generator.model_generator import ModelGenerator
 from generator.repository_generator import RepositoryGenerator
+from generator.router_generator import RouterGenerator
 from generator.service_generator import ServiceGenerator
 from generator.simple_details_generator import SimpleDetailsGenerator
 from generator.tables_generator import TablesGenerator
@@ -37,6 +38,7 @@ class Generator:
         self.generate_details_components()
         self.generate_table_components()
         self.generate_home_page()
+        self.generate_router()
 
     def generate_model(self):
         generator_options = GeneratorOptions("generator_output\\backend-service\\src\\main\\java".replace("\\", os.sep),
@@ -114,3 +116,10 @@ class Generator:
                                              "components")
         homepage_generator = HomePageGenerator(generator_options, self.classes)
         homepage_generator.generate()
+
+    def generate_router(self):
+        generator_options = GeneratorOptions("generator_output\\vue-template\\src".replace("\\", os.sep),
+                                             "router.jinja", "./templates", "index.js",
+                                             "router")
+        router_generator = RouterGenerator(generator_options, self.classes)
+        router_generator.generate()

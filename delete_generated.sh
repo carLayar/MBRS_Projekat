@@ -24,6 +24,7 @@ done
 folders2=(
     "generator_output/vue-template/src/service/"
 	"generator_output/vue-template/src/components/"
+	"generator_output/vue-template/src/router/"
 )
 files_to_keep=(
 	"api.js"
