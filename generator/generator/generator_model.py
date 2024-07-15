@@ -101,3 +101,9 @@ class ClassGenerationModel:
     @property
     def list_class(self):
         return self.clas.name + "s"
+
+
+class ClassesGenerationModel:
+    def __init__(self, generator_options, classes: []):
+        self.generator_options = generator_options
+        self.classes = classes
