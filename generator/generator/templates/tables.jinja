@@ -34,7 +34,7 @@
     <div class="modal-dialog">
       <div class="modal-content">
         <div class="modal-header">
-          <h5 class="modal-title">Dodaj nov Account</h5>
+          <h5 class="modal-title">Dodaj {{ model.clas | class_accusative_label_converter }}</h5>
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body">
@@ -71,7 +71,7 @@
     <div class="modal-dialog">
       <div class="modal-content">
         <div class="modal-header">
-          <h5 class="modal-title" id="modalAdd">Izmeni Account</h5>
+          <h5 class="modal-title" id="modalAdd">Izmeni {{ model.clas | class_accusative_label_converter }}</h5>
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body">

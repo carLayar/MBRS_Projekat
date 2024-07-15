@@ -124,6 +124,17 @@ class TablesGenerator:
             else:
                 return value.name
 
+        def class_accusative_label_converter(value):
+            label = ''
+            page = None
+            for stereotype in value.stereotypes:
+                if isinstance(stereotype, StereotypePage):
+                    page = stereotype
+                    break
+            if page is not None:
+                label = page.accusative_label
+            return label
+
         def generate_label_add_modal(attribute):
             field_stereotype = None
             for stereotype in attribute.stereotypes:
@@ -153,6 +164,7 @@ class TablesGenerator:
         self.env.filters['attribute_list_name_converter'] = attribute_list_name_converter
         self.env.filters['attribute_variable_name_converter'] = attribute_variable_name_converter
         self.env.filters['label_converter_connected_type'] = label_converter_connected_type
+        self.env.filters['class_accusative_label_converter'] = class_accusative_label_converter
 
         self.env.globals['generate_label_add_modal'] = generate_label_add_modal
         self.env.globals['attribute_is_singular'] = attribute_is_singular
