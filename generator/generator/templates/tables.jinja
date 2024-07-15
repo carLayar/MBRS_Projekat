@@ -21,9 +21,9 @@
           {% endif -%}
           {% endfor -%}
           <td>
-            <button class="btn btn-primary me-2" @click="viewDetails(object.id)">Details</button>
+            <button class="btn btn-primary me-2" @click="viewDetails(object.id)">Detalji</button>
             <button class="btn btn-secondary" @click="showUpdateModal(object)"
-            data-bs-toggle="modal" data-bs-target="#modalUpdate">Update</button>
+            data-bs-toggle="modal" data-bs-target="#modalUpdate">Izmeni</button>
           </td>
         </tr>
       </tbody>
@@ -34,7 +34,7 @@
     <div class="modal-dialog">
       <div class="modal-content">
         <div class="modal-header">
-          <h5 class="modal-title">Dodaj nov Account</h5>
+          <h5 class="modal-title">Dodaj {{ model.clas | class_accusative_label_converter }}</h5>
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body">
@@ -61,7 +61,7 @@
           </div>
         </div>
         <div class="modal-footer">
-          <button class="btn btn-success" type="submit" @click="addObject">Add</button>
+          <button class="btn btn-success" type="submit" @click="addObject">Dodaj</button>
         </div>
       </div>
     </div>
@@ -71,7 +71,7 @@
     <div class="modal-dialog">
       <div class="modal-content">
         <div class="modal-header">
-          <h5 class="modal-title" id="modalAdd">Izmeni Account</h5>
+          <h5 class="modal-title" id="modalAdd">Izmeni {{ model.clas | class_accusative_label_converter }}</h5>
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body">
@@ -126,7 +126,7 @@
           </div>
         </div>
         <div class="modal-footer">
-          <button class="btn btn-secondary" type="submit" @click="updateObject">Update</button>
+          <button class="btn btn-secondary" type="submit" @click="updateObject">Izmeni</button>
         </div>
       </div>
     </div>
