@@ -21,9 +21,9 @@
           {% endif -%}
           {% endfor -%}
           <td>
-            <button class="btn btn-primary me-2" @click="viewDetails(object.id)">Details</button>
+            <button class="btn btn-primary me-2" @click="viewDetails(object.id)">Detalji</button>
             <button class="btn btn-secondary" @click="showUpdateModal(object)"
-            data-bs-toggle="modal" data-bs-target="#modalUpdate">Update</button>
+            data-bs-toggle="modal" data-bs-target="#modalUpdate">Izmeni</button>
           </td>
         </tr>
       </tbody>
@@ -61,7 +61,7 @@
           </div>
         </div>
         <div class="modal-footer">
-          <button class="btn btn-success" type="submit" @click="addObject">Add</button>
+          <button class="btn btn-success" type="submit" @click="addObject">Dodaj</button>
         </div>
       </div>
     </div>
@@ -126,7 +126,7 @@
           </div>
         </div>
         <div class="modal-footer">
-          <button class="btn btn-secondary" type="submit" @click="updateObject">Update</button>
+          <button class="btn btn-secondary" type="submit" @click="updateObject">Izmeni</button>
         </div>
       </div>
     </div>
