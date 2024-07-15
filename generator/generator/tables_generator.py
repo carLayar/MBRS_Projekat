@@ -25,6 +25,9 @@ class TablesGenerator:
         def label_converter_connected_type(value):
             label = ''
             data_type = value.data_type
+            if "List" in value.data_type:
+                splited_list = value.data_type.split("<")
+                data_type = splited_list[1].replace(">", "")
             searched_class = None
             for clas in self.classes:
                 if clas.name == data_type:
@@ -37,12 +40,10 @@ class TablesGenerator:
                         searched_stereotype = stereotype
                         break
                 if searched_stereotype is not None:
-                    if "List" in data_type:
+                    if "List" in value.data_type:
                         label = searched_stereotype.plural_label
                     else:
                         label = searched_stereotype.singular_label
-            print("---------------------------------")
-            print(label)
             return label
 
         def attribute_class_name_converter(value):
