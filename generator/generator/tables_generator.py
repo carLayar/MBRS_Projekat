@@ -87,6 +87,19 @@ class TablesGenerator:
                 return page_stereotype.plural_label
             return ""
 
+        def attribute_list_name_converter(value):
+            is_singular = True
+            searched_data_type = value.data_type
+            if "List" in value.data_type:
+                splited_list = value.data_type.split("<")
+                searched_data_type = splited_list[1].replace(">", "")
+                is_singular = False
+
+            if is_singular:
+                return value.name + "s"
+            else:
+                return value.name
+
         def generate_label_add_modal(attribute):
             field_stereotype = None
             for stereotype in attribute.stereotypes:
@@ -98,13 +111,25 @@ class TablesGenerator:
                     return True
             return False
 
+        def attribute_is_singular(value):
+            is_singular = True
+            searched_data_type = value.data_type
+            if "List" in value.data_type:
+                splited_list = value.data_type.split("<")
+                searched_data_type = splited_list[1].replace(">", "")
+                is_singular = False
+
+            return is_singular
+
         self.env.filters['label_converter'] = label_converter
         self.env.filters['attribute_class_name_converter'] = attribute_class_name_converter
         self.env.filters['connected_attribute_label_converter'] = connected_attribute_label_converter
         self.env.filters['simple_details_component_converter'] = simple_details_component_converter
         self.env.filters['plural_label_converter'] = plural_label_converter
+        self.env.filters['attribute_list_name_converter'] = attribute_list_name_converter
 
         self.env.globals['generate_label_add_modal'] = generate_label_add_modal
+        self.env.globals['attribute_is_singular'] = attribute_is_singular
 
     def generate(self):
         for clas in self.classes:
