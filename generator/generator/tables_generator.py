@@ -22,6 +22,29 @@ class TablesGenerator:
                     return stereotype.label
             return ""
 
+        def label_converter_connected_type(value):
+            label = ''
+            data_type = value.data_type
+            searched_class = None
+            for clas in self.classes:
+                if clas.name == data_type:
+                    searched_class = clas
+                    break
+            if searched_class is not None:
+                searched_stereotype = None
+                for stereotype in searched_class.stereotypes:
+                    if isinstance(stereotype, StereotypePage):
+                        searched_stereotype = stereotype
+                        break
+                if searched_stereotype is not None:
+                    if "List" in data_type:
+                        label = searched_stereotype.plural_label
+                    else:
+                        label = searched_stereotype.singular_label
+            print("---------------------------------")
+            print(label)
+            return label
+
         def attribute_class_name_converter(value):
             if "List" in value.data_type:
                 return value.name[0].upper() + value.name[1:-1]
@@ -128,6 +151,7 @@ class TablesGenerator:
         self.env.filters['plural_label_converter'] = plural_label_converter
         self.env.filters['attribute_list_name_converter'] = attribute_list_name_converter
         self.env.filters['attribute_variable_name_converter'] = attribute_variable_name_converter
+        self.env.filters['label_converter_connected_type'] = label_converter_connected_type
 
         self.env.globals['generate_label_add_modal'] = generate_label_add_modal
         self.env.globals['attribute_is_singular'] = attribute_is_singular

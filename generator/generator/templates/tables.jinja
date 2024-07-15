@@ -79,7 +79,6 @@
             {% for attribute in model.non_connected_attributes -%}
             {% if generate_label_add_modal(attribute) %}
             <label class="my-1">{{ attribute | label_converter }}</label>
-
             {% if attribute.data_type == "LocalDateTime" -%}
             <input type="date" class="form-control" placeholder="date" v-model="updateForm.{{ attribute.name }}" required>
 
@@ -91,11 +90,22 @@
 
             {% elif attribute.data_type == "Double" -%}
             <input type="number" class="form-control" v-model="updateForm.{{ attribute.name }}" required>
-
             {% endif -%}
             {% endif -%}
             {% endfor %}
+            <!-- Connected entities -->
+            {% for attribute in model.connected_attributes -%}
+            {% if attribute_is_singular(attribute) -%}
+            <label class="my-1">{{ attribute | label_converter_connected_type }}</label>
+            <!-- dropbox -->
+            <select class="form-select" v-model="selected{{ attribute | attribute_class_name_converter }}">
+              <option :value="null">None</option>
+              <option v-for="item in {{ attribute | attribute_list_name_converter }}" :key="item.id" :value="item">{% raw %}{{{% endraw %}item.id{% raw %}}}{% endraw %}</option>
+            </select>
+            {% else -%}
 
+            {% endif %}
+            {% endfor %}
 
           </div>
         </div>
