@@ -127,6 +127,7 @@ class TablesGenerator:
         self.env.filters['simple_details_component_converter'] = simple_details_component_converter
         self.env.filters['plural_label_converter'] = plural_label_converter
         self.env.filters['attribute_list_name_converter'] = attribute_list_name_converter
+        self.env.filters['attribute_variable_name_converter'] = attribute_variable_name_converter
 
         self.env.globals['generate_label_add_modal'] = generate_label_add_modal
         self.env.globals['attribute_is_singular'] = attribute_is_singular

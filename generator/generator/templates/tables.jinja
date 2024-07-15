@@ -185,6 +185,91 @@ export default {
     },
     // Add section end
 
+    // BEGIN Update related methods
+    {% for attribute in model.connected_attributes -%}
+    {% if attribute_is_singular(attribute) -%}
+    // update util
+    setSelected{{ attribute | attribute_class_name_converter }}({{ model.class_variable }}Id) {
+      this.selected{{ attribute | attribute_class_name_converter }} = null;
+
+      const obj = this.{{ model.list_variable }}.find(x => x.id === {{ model.class_variable }}Id);
+      if (obj === undefined) {
+        return;
+      }
+
+      const foundObj = this.{{ attribute | attribute_list_name_converter }}.find(x => x.id === obj.{{ attribute.name }}Id);
+      if (foundObj === undefined) {
+        return;
+      }
+
+      this.selected{{ attribute | attribute_class_name_converter }} = foundObj;
+    },
+    {% else -%}
+    // update util
+    setCurrent{{ attribute | attribute_class_name_converter }}({{ model.class_variable }}Id) {
+      const obj = this.{{ model.list_variable }}.find(x => x.id === {{ model.class_variable }}Id);
+      if (obj === undefined) {
+        return;
+      }
+      this.current{{ attribute | attribute_class_name_converter }} = this.{{ attribute | attribute_list_name_converter }}.filter(x => obj.{{ attribute | attribute_variable_name_converter }}Ids.includes(x.id));
+    },
+
+    // update util
+    add{{ attribute | attribute_class_name_converter }}() {
+      this.current{{ attribute | attribute_class_name_converter }}.push(this.newSelected{{ attribute | attribute_class_name_converter }});
+      this.newSelected{{ attribute | attribute_class_name_converter }} = null;
+    },
+
+    // update util
+    remove{{ attribute | attribute_class_name_converter }}({{ attribute | attribute_variable_name_converter }}Id) {
+      this.current{{ attribute | attribute_class_name_converter }} = this.current{{ attribute | attribute_class_name_converter }}.filter(x => x.id !== {{ attribute | attribute_variable_name_converter }}Id);
+    },
+    {% endif %}
+    {% endfor %}
+    showUpdateModal(object) {
+      this.updateForm = { ...object };
+      {%- for attribute in model.non_connected_attributes -%}
+      {% if attribute.data_type == "LocalDateTime" -%}
+      this.updateForm.{{ attribute.name }} = `${object.{{ attribute.name }}[0]}-${String(object.{{ attribute.name }}[1]).padStart(2, '0')}-${String(object.{{ attribute.name }}[2]).padStart(2, '0')}`;
+      {% endif %}
+      {% endfor -%}
+      {% for attribute in model.connected_attributes -%}
+      {% if attribute_is_singular(attribute) -%}
+      this.setSelected{{ attribute | attribute_class_name_converter }}(object.id);
+      {% else -%}
+      this.setCurrent{{ attribute | attribute_class_name_converter }}(object.id);
+      {% endif %}
+      {% endfor %}
+    },
+    updateObject() {
+      let payload = {...this.updateForm};
+      {%- for attribute in model.non_connected_attributes -%}
+      {% if attribute.data_type == "LocalDateTime" -%}
+      payload.{{ attribute.name }} = new Date(this.updateForm.{{ attribute.name }}).toISOString();
+      {% endif %}
+      {% endfor -%}
+
+      {% for attribute in model.connected_attributes -%}
+      {% if attribute_is_singular(attribute) -%}
+      payload.{{ attribute.name }} = this.selected{{ attribute | attribute_class_name_converter }};
+      {% else -%}
+      payload.{{ attribute.name }} = this.current{{ attribute | attribute_class_name_converter }};
+      {% endif %}
+      {% endfor %}
+      {{ model.class_name }}Service.update(payload.id, payload)
+      .then(_res => {
+        this.resetForm();
+        window.location.reload();
+      })
+      .catch(err => {
+        console.log(err);
+      });
+
+      this.closeUpdateModal();
+
+    },
+    // END Update related methods
+
     resetForm() {
       this.addForm = {};
       this.updateForm = {};
