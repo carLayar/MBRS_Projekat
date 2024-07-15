@@ -5,6 +5,7 @@ from generator.controller_generator import ControllerGenerator
 from generator.details_generator import DetailsGenerator
 from generator.dto_generator import DtoGenerator
 from generator.front_service_generator import FrontServiceGenerator
+from generator.home_page_generator import HomePageGenerator
 from generator.mapper_generator import MapperGenerator
 from generator.model_generator import ModelGenerator
 from generator.repository_generator import RepositoryGenerator
@@ -35,6 +36,7 @@ class Generator:
         self.generate_simple_details_components()
         self.generate_details_components()
         self.generate_table_components()
+        self.generate_home_page()
 
     def generate_model(self):
         generator_options = GeneratorOptions("generator_output\\backend-service\\src\\main\\java".replace("\\", os.sep),
@@ -105,3 +107,10 @@ class Generator:
                                              "components")
         tables_generator = TablesGenerator(generator_options, self.classes)
         tables_generator.generate()
+
+    def generate_home_page(self):
+        generator_options = GeneratorOptions("generator_output\\vue-template\\src".replace("\\", os.sep),
+                                             "homepage.jinja", "./templates", "HomePage.vue",
+                                             "components")
+        homepage_generator = HomePageGenerator(generator_options, self.classes)
+        homepage_generator.generate()
